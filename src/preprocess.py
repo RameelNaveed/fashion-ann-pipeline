@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 
 RAW_DIR = "data/raw"
 OUT_DIR = "data/processed"
+PIXEL_MEAN = 0.2860
+PIXEL_STD = 0.3530
 
 
 def load_params():
@@ -13,23 +15,31 @@ def load_params():
         return yaml.safe_load(f)["preprocess"]
 
 
-def normalize(images):
-    return images.astype("float32") / 255.0 - 0.5
+def normalize(images, method):
+    images = images.astype("float32") / 255.0
+    if method == "minmax":
+        return images
+    if method == "center":
+        return images - 0.5
+    if method == "standard":
+        return (images - PIXEL_MEAN) / PIXEL_STD
+    raise ValueError(f"Unknown normalization: {method}")
 
 
 def main():
     params = load_params()
+    method = params["normalization"]
     train = np.load(os.path.join(RAW_DIR, "train.npz"))
     test = np.load(os.path.join(RAW_DIR, "test.npz"))
 
     x_train, x_val, y_train, y_val = train_test_split(
-        normalize(train["images"]),
+        normalize(train["images"], method),
         train["labels"],
         test_size=params["val_size"],
         random_state=params["seed"],
         stratify=train["labels"],
     )
-    x_test = normalize(test["images"])
+    x_test = normalize(test["images"], method)
 
     os.makedirs(OUT_DIR, exist_ok=True)
     np.savez_compressed(os.path.join(OUT_DIR, "train.npz"), images=x_train, labels=y_train)
