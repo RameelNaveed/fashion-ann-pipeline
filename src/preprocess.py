@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 
 RAW_DIR = "data/raw"
 OUT_DIR = "data/processed"
+PIXEL_MEAN = 0.2860
+PIXEL_STD = 0.3530
 
 
 def load_params():
@@ -14,7 +16,8 @@ def load_params():
 
 
 def normalize(images):
-    return images.astype("float32") / 255.0
+    images = images.astype("float32") / 255.0
+    return (images - PIXEL_MEAN) / PIXEL_STD
 
 
 def main():
