@@ -14,7 +14,7 @@ def load_params():
 
 
 def normalize(images):
-    return images.astype("float32") / 255.0
+    return images.astype("float32") / 255.0 - 0.5
 
 
 def main():
