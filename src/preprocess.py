@@ -35,6 +35,7 @@ def main():
     np.savez_compressed(os.path.join(OUT_DIR, "train.npz"), images=x_train, labels=y_train)
     np.savez_compressed(os.path.join(OUT_DIR, "val.npz"), images=x_val, labels=y_val)
     np.savez_compressed(os.path.join(OUT_DIR, "test.npz"), images=x_test, labels=test["labels"])
+    print(f"Train: {x_train.shape}, Val: {x_val.shape}, Test: {x_test.shape}")
 
 
 if __name__ == "__main__":
